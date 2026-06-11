@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Technocraft - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Hanken Grotesk', sans-serif; -webkit-font-smoothing: antialiased; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        
+        /* Smooth Entry Animations */
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+
+        /* Mobile Sidebar Drawer Overlay State Trigger toggle helpers */
+        @media (max-width: 1023px) {
+            .sidebar-open #sidebar-wrapper { transform: translateX(0); }
+            .sidebar-open #sidebar-overlay { opacity: 1; visibility: visible; }
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#505f76", "inverse-primary": "#b7c8e1", "on-tertiary-fixed": "#2a1801",
+                        "surface-variant": "#e4e2e4", "surface": "#fbf9fa", "on-tertiary-container": "#fff9f5",
+                        "secondary-container": "#d2e1f7", "on-primary-container": "#f9f9ff", "on-primary-fixed": "#0b1c30",
+                        "on-primary-fixed-variant": "#38485d", "surface-dim": "#dbd9db", "inverse-on-surface": "#f2f0f2",
+                        "on-secondary-fixed-variant": "#39485a", "secondary-fixed": "#d4e4fa", "on-tertiary": "#ffffff",
+                        "secondary": "#516072", "tertiary-container": "#8a6e4c", "surface-bright": "#fbf9fa",
+                        "secondary-fixed-dim": "#b9c8de", "on-surface-variant": "#44474c", "on-background": "#1b1b1d",
+                        "on-secondary-container": "#556477", "surface-container-lowest": "#ffffff", "inverse-surface": "#303032",
+                        "on-error-container": "#93000a", "on-tertiary-fixed-variant": "#5a4224", "primary-fixed-dim": "#b7c8e1",
+                        "tertiary-fixed-dim": "#e3c199", "primary-container": "#64748b", "error-container": "#ffdad6",
+                        "on-surface": "#1b1b1d", "primary-fixed": "#d3e4fe", "surface-container-low": "#f5f3f5",
+                        "on-primary": "#ffffff", "outline": "#74777d", "on-secondary": "#ffffff", "outline-variant": "#c4c6cd",
+                        "tertiary": "#6f5636", "on-error": "#ffffff", "on-secondary-fixed": "#0d1c2d",
+                        "surface-container-highest": "#e4e2e4", "error": "#ba1a1a", "background": "#f4f5f7",
+                        "tertiary-fixed": "#ffddb6", "primary": "#4c5b71", "surface-container": "#efedef"
+                    },
+                    "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    "spacing": { "margin-mobile": "16px", "lg": "2rem", "base": "4px", "md": "1.5rem", "gutter": "24px", "margin-desktop": "32px", "xs": "0.5rem", "xl": "3rem", "sm": "1rem" },
+                    "fontFamily": {
+                        "label-md": ["Hanken Grotesk"], "code-sm": ["jetbrainsMono"], "body-md": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"], "body-lg": ["Hanken Grotesk"], "headline-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-background text-on-background overflow-x-hidden">
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 z-40 lg:hidden"></div>
+
+    <div id="sidebar-wrapper" class="fixed top-0 bottom-0 left-0 w-[280px] h-screen bg-white z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-gray-200/50">
+        <div id="sidebar-container" class="h-full w-full"></div>
+    </div>
+
+    <div class="min-h-screen flex flex-col lg:pl-[280px] transition-all duration-300">
+
+        <header class="h-16 sticky top-0 z-30 bg-[#f4f5f7]/90 backdrop-blur-md flex justify-between items-center px-4 md:px-margin-desktop w-full border-b border-gray-200/60 transition-all">
+            
+            <div class="flex items-center gap-3 w-1/2 lg:w-1/3">
+                <button id="mobile-menu-toggle" class="material-symbols-outlined text-on-surface-variant hover:text-primary p-1.5 hover:bg-surface-container-low rounded-full lg:hidden transition-colors cursor-pointer focus:outline-none">menu</button>
+                
+                <div class="relative w-full max-w-md group hidden sm:block">
+                    <span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant transition-colors group-focus-within:text-primary">search</span>
+                    <input id="searchInput" class="w-full bg-white border border-gray-200/60 rounded-full py-1.5 pl-xl pr-md text-body-md focus:ring-2 focus:ring-primary focus:bg-white transition-all shadow-sm" placeholder="Search operations..." type="text"/>
+                </div>
+            </div>
+            
+            <h2 class="font-headline-md text-base md:text-headline-md font-bold text-on-surface whitespace-nowrap">Dashboard Overview</h2>
+            
+            <div class="flex items-center justify-end w-1/2 lg:w-1/3 gap-3 md:gap-5">
+                <button class="material-symbols-outlined text-on-surface-variant hover:text-primary hover:scale-110 transition-all cursor-pointer sm:hidden">search</button>
+                <div class="h-7 w-px bg-outline-variant/40 hidden sm:block"></div>
+                <button class="material-symbols-outlined text-on-surface-variant hover:text-primary hover:scale-110 transition-all cursor-pointer hidden sm:block">help_outline</button>
+                
+                <div class="relative flex items-center">
+                    <button id="notif-btn" class="material-symbols-outlined text-on-surface-variant hover:text-primary hover:scale-110 transition-all cursor-pointer relative">
+                        notifications
+                        <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#e2726e] rounded-full border-[1.5px] border-white"></span>
+                    </button>
+                    <div id="notif-dropdown" class="absolute right-0 mt-3 top-full w-72 bg-white border border-surface-dim rounded-2xl shadow-[0px_10px_30px_rgba(0,0,0,0.08)] opacity-0 invisible translate-y-2 transition-all duration-300 z-50">
+                        <div class="p-4 border-b border-surface-container-low font-bold text-on-surface flex justify-between items-center">
+                            Notifications <span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">1 New</span>
+                        </div>
+                        <div class="p-4 flex flex-col gap-3">
+                            <div class="flex gap-3 items-start cursor-pointer hover:bg-surface-container-low p-2 -m-2 rounded-lg transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-on-surface">System Update Complete</p>
+                                    <p class="text-xs text-on-surface-variant">v2.0 is live.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center">
+                    <button id="profile-btn" class="h-9 w-9 md:h-10 md:w-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-surface-container-highest hover:border-primary transition-all focus:outline-none">
+                        <img alt="Avatar" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUVVNY6j7Epofems6gnzxGIqPtIh7L84Mmo2KGXgI5pN0ay7N8KorHhNDtLcDkJ_hrg53GGHYD1aS1pALgQgn-w0LUV1FmN3pByIwaoYndPJXYMIj6cf7dZACPDDXsIeMfYYvc4W_E-j0pjYoOyrO1oOeHak_6uJx-OHMA-ssh-4VCl8pSX9UbpFbFfssOrrZZGYVf97CyFHckA-VLQPWUWsAEzzyMNUoZcJ506_N8pATIjH9JvPHN1jMkkgPhooG7Y7YgJ5CUdymp"/>
+                    </button>
+                    <div id="profile-dropdown" class="absolute right-0 mt-3 top-full w-56 bg-white border border-surface-dim rounded-2xl shadow-[0px_10px_30px_rgba(0,0,0,0.08)] opacity-0 invisible translate-y-2 transition-all duration-300 z-50 py-2">
+                        <div class="px-4 py-3 border-b border-surface-container-low mb-1">
+                            <p class="font-bold text-on-surface">Operations Admin</p>
+                        </div>
+                        <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-error hover:bg-error/10 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">logout</span> Sign out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-margin-desktop min-h-screen bg-[#f1f3f6] flex-grow">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-gutter mb-lg animate-slide-up">
+                <a href="reports.html?reportType=sales" class="block bg-white p-md rounded-[1.5rem] shadow-[0_5px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 border border-gray-200/80 transition-all duration-300 flex flex-col gap-xs cursor-pointer no-underline group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-label-md font-label-md text-primary tracking-wider uppercase group-hover:text-primary-fixed-variant transition-colors">Sales</span>
+                        <span class="material-symbols-outlined text-primary-container group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">payments</span>
+                    </div>
+                    <div class="mt-xs">
+                        <span id="kpi-sales" class="text-headline-lg font-headline-lg text-on-surface">₹0</span>
+                        <p id="trend-sales" class="text-label-md font-label-md mt-1 flex items-center gap-1 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[14px]">horizontal_rule</span> Loading...
+                        </p>
+                    </div>
+                </a>
+                
+                <a href="reports.html?reportType=purchase" class="block bg-white p-md rounded-[1.5rem] shadow-[0_5px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 border border-gray-200/80 transition-all duration-300 flex flex-col gap-xs cursor-pointer no-underline group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-label-md font-label-md text-primary tracking-wider uppercase group-hover:text-primary-fixed-variant transition-colors">Purchase</span>
+                        <span class="material-symbols-outlined text-primary-container group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+                    </div>
+                    <div class="mt-xs">
+                        <span id="kpi-purchases" class="text-headline-lg font-headline-lg text-on-surface">₹0</span>
+                        <p id="trend-purchases" class="text-label-md font-label-md mt-1 flex items-center gap-1 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[14px]">horizontal_rule</span> Loading...
+                        </p>
+                    </div>
+                </a>
+                
+                <a href="reports.html?reportType=sales_return" class="block bg-white p-md rounded-[1.5rem] shadow-[0_5px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 border border-gray-200/80 transition-all duration-300 flex flex-col gap-xs cursor-pointer no-underline group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-label-md font-label-md text-primary tracking-wider uppercase group-hover:text-primary-fixed-variant transition-colors">Sales Return</span>
+                        <span class="material-symbols-outlined text-primary-container group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">keyboard_return</span>
+                    </div>
+                    <div class="mt-xs">
+                        <span id="kpi-sales-return" class="text-headline-lg font-headline-lg text-on-surface">₹0</span>
+                        <p id="trend-sales-return" class="text-label-md font-label-md mt-1 flex items-center gap-1 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[14px]">horizontal_rule</span> Loading...
+                        </p>
+                    </div>
+                </a>
+                
+                <a href="reports.html?reportType=purchase_return" class="block bg-white p-md rounded-[1.5rem] shadow-[0_5px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 border border-gray-200/80 transition-all duration-300 flex flex-col gap-xs cursor-pointer no-underline group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-label-md font-label-md text-primary tracking-wider uppercase group-hover:text-primary-fixed-variant transition-colors">Purchase Return</span>
+                        <span class="material-symbols-outlined text-primary-container group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">undo</span>
+                    </div>
+                    <div class="mt-xs">
+                        <span id="kpi-purchase-return" class="text-headline-lg font-headline-lg text-on-surface">₹0</span>
+                        <p id="trend-purchase-return" class="text-label-md font-label-md mt-1 flex items-center gap-1 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[14px]">horizontal_rule</span> Loading...
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-lg animate-slide-up delay-100">
+                <div class="lg:col-span-5 bg-white p-md rounded-[1.5rem] shadow-[0_5px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100">
+                    <div class="flex justify-between items-center mb-lg relative">
+                        <h3 class="font-headline-md text-headline-md text-on-surface">Top Selling Products</h3>
+                        
+                        <div class="relative">
+                            <button id="pie-options-btn" class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-1.5 rounded-full transition-colors cursor-pointer focus:outline-none">more_vert</button>
+                            <div id="pie-options-dropdown" class="absolute right-0 mt-2 w-40 bg-white border border-surface-dim rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-2 transition-all duration-200 z-10 py-1">
+                                <button id="export-pie" class="w-full text-left px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">download</span> Export CSV
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center py-sm">
+                        <div class="relative w-44 h-44 md:w-48 md:h-48 mb-6 flex justify-center items-center">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                        <div id="custom-pie-legend" class="w-full grid grid-cols-2 gap-4 mt-2 px-4"></div>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-7 bg-white p-md rounded-[1.5rem] shadow-[0_5px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100">
+                    <div class="flex justify-between items-center mb-lg relative">
+                        <div>
+                            <h3 class="font-headline-md text-headline-md text-on-surface">Sales Summary</h3>
+                        </div>
+                        <div class="flex items-center gap-2 md:gap-4">
+                            <div class="flex gap-xs bg-surface-container-low p-1 rounded-lg scale-90 md:scale-100">
+                                <button id="btn-weekly" class="px-sm py-1 bg-surface-container-lowest text-primary rounded-md shadow-sm text-label-md transition-all">Weekly</button>
+                                <button id="btn-monthly" class="px-sm py-1 text-on-surface-variant hover:text-primary text-label-md transition-all">Monthly</button>
+                            </div>
+                            
+                            <div class="relative">
+                                <button id="line-options-btn" class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-1.5 rounded-full transition-colors cursor-pointer focus:outline-none">more_vert</button>
+                                <div id="line-options-dropdown" class="absolute right-0 mt-2 w-40 bg-white border border-surface-dim rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.1)] opacity-0 invisible translate-y-2 transition-all duration-200 z-10 py-1">
+                                    <button id="export-line" class="w-full text-left px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-[18px]">download</span> Export CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative w-full h-64 md:h-72 mt-4">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 col-span-full pb-10 animate-slide-up delay-200">
+                <div class="lg:col-span-8 bg-white rounded-[1.5rem] shadow-[0_5px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100 p-md flex flex-col overflow-hidden">
+                    <div class="flex justify-between items-center mb-md">
+                        <h3 class="text-headline-md font-bold text-on-surface">Recent Transactions</h3>
+                        <a href="challan.html" class="text-primary font-bold text-label-md hover:underline flex items-center gap-1">View All</a>
+                    </div>
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left min-w-[500px]">
+                            <thead>
+                                <tr class="border-b border-surface-container-low">
+                                    <th class="pb-2 uppercase text-[10px] tracking-wider text-outline-variant font-bold">Challan ID</th>
+                                    <th class="pb-2 uppercase text-[10px] tracking-wider text-outline-variant font-bold">Date</th>
+                                    <th class="pb-2 uppercase text-[10px] tracking-wider text-outline-variant font-bold">Party</th>
+                                    <th class="pb-2 uppercase text-[10px] tracking-wider text-outline-variant font-bold">Status</th>
+                                    <th class="pb-2 uppercase text-[10px] tracking-wider text-outline-variant font-bold text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-transactions-body" class="text-body-md"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 bg-white rounded-[1.5rem] shadow-[0_5px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100 p-md flex flex-col">
+                    <div class="flex justify-between items-start mb-md">
+                        <div>
+                            <h3 class="text-headline-md font-bold text-on-surface">Low Stock Alerts</h3>
+                        </div>
+                        <div class="bg-error/10 p-2 rounded-full text-error flex items-center justify-center"><span class="material-symbols-outlined">warning</span></div>
+                    </div>
+                    <div id="low-stock-container" class="flex flex-col gap-md flex-grow">
+                        <p class="text-center text-on-surface-variant mt-4">Loading alerts...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggleBtn = document.getElementById('mobile-menu-toggle');
+            const sideOverlay = document.getElementById('sidebar-overlay');
+            const rootHtml = document.documentElement;
+
+            const toggleSidebarState = () => {
+                rootHtml.classList.toggle('sidebar-open');
+            };
+
+            // Toggle sidebar open/close triggers on smaller viewports
+            if (menuToggleBtn && sideOverlay) {
+                menuToggleBtn.addEventListener('click', toggleSidebarState);
+                sideOverlay.addEventListener('click', toggleSidebarState);
+            }
+
+            // Core Dropdown Toggle Logic
+            const setupDropdown = (btnId, menuId) => {
+                const btn = document.getElementById(btnId);
+                const menu = document.getElementById(menuId);
+                if (!btn || !menu) return;
+
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = !menu.classList.contains('opacity-0');
+                    // Close all other dropdowns
+                    document.querySelectorAll('[id$="-dropdown"]').forEach(m => m.classList.add('opacity-0', 'invisible', 'translate-y-2'));
+                    // Toggle current dropdown
+                    if (!isOpen) menu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+                });
+            };
+
+            setupDropdown('notif-btn', 'notif-dropdown');
+            setupDropdown('profile-btn', 'profile-dropdown');
+            setupDropdown('pie-options-btn', 'pie-options-dropdown');
+            setupDropdown('line-options-btn', 'line-options-dropdown');
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                document.querySelectorAll('[id$="-dropdown"]').forEach(menu => {
+                    if (!menu.contains(e.target)) menu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+                });
+            });
+        });
+    </script>
+    <script type="module">
+        import { loadSidebar } from './js/layout.js';
+        loadSidebar();
+    </script>
+    <script type="module" src="./js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<aside class="w-[280px] h-full fixed left-0 top-0 flex flex-col py-lg pl-6 pr-4 gap-md bg-white border-r border-gray-200/50 shadow-[5px_0_25px_rgba(0,0,0,0.015)] z-50">
+    
+    <div class="mb-lg pr-2">
+        <h1 class="text-headline-md font-headline-md text-primary font-bold">Technocraft</h1>
+        <p class="font-body-md text-on-surface-variant">Operations Manager</p>
+    </div>
+    
+    <a href="create-challan.html" class="block mb-6 pr-2 no-underline">
+        <button class="w-full bg-primary text-white py-3 px-4 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:bg-primary/90 hover:shadow-[0_4px_15px_rgba(76,91,113,0.3)] active:scale-[0.98] transition-all font-bold text-sm">
+            <span class="material-symbols-outlined text-[20px]">add</span>
+            New Entry
+        </button>
+    </a>
+    
+    <!-- Navigation Container -->
+    <nav class="flex flex-col gap-1.5 flex-grow relative" id="nav-links">
+        
+        <!-- 1. Dashboard Link -->
+        <a data-page="dashboard.html" href="dashboard.html" class="nav-link relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-xl transition-all duration-300 ease-out cursor-pointer no-underline group overflow-hidden">
+            <!-- Active Left Elevation Accent Indicator Pill Line -->
+            <span class="active-indicator absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-full transform -translate-x-full opacity-0 transition-all duration-300 ease-out"></span>
+            
+            <span class="material-symbols-outlined text-[20px] group-hover:scale-110 group-hover:text-primary transition-all duration-300">dashboard</span>
+            <span class="font-semibold text-sm transition-transform duration-300 group-hover:translate-x-0.5">Dashboard</span>
+        </a>
+        
+        <!-- 2. Challan Hub Link -->
+        <a data-page="challan.html" href="challan.html" class="nav-link relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-xl transition-all duration-300 ease-out cursor-pointer no-underline group overflow-hidden">
+            <span class="active-indicator absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-full transform -translate-x-full opacity-0 transition-all duration-300 ease-out"></span>
+            
+            <span class="material-symbols-outlined text-[20px] group-hover:scale-110 group-hover:text-primary transition-all duration-300">receipt_long</span>
+            <span class="font-semibold text-sm transition-transform duration-300 group-hover:translate-x-0.5">Challan Hub</span>
+        </a>
+        
+        <!-- 3. Products Link -->
+        <a data-page="products.html" href="products.html" class="nav-link relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-xl transition-all duration-300 ease-out cursor-pointer no-underline group overflow-hidden">
+            <span class="active-indicator absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-full transform -translate-x-full opacity-0 transition-all duration-300 ease-out"></span>
+            
+            <span class="material-symbols-outlined text-[20px] group-hover:scale-110 group-hover:text-primary transition-all duration-300">inventory_2</span>
+            <span class="font-semibold text-sm transition-transform duration-300 group-hover:translate-x-0.5">Products</span>
+        </a>
+        
+        <!-- 4. Reports Link -->
+        <a data-page="reports.html" href="reports.html" class="nav-link relative flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-xl transition-all duration-300 ease-out cursor-pointer no-underline group overflow-hidden">
+            <span class="active-indicator absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-full transform -translate-x-full opacity-0 transition-all duration-300 ease-out"></span>
+            
+            <span class="material-symbols-outlined text-[20px] group-hover:scale-110 group-hover:text-primary transition-all duration-300">analytics</span>
+            <span class="font-semibold text-sm transition-transform duration-300 group-hover:translate-x-0.5">Reports</span>
+        </a>
+    </nav>
+    
+    <!-- Footer Section -->
+    <div class="mt-auto flex flex-col gap-1.5 border-t border-gray-100 pt-md pr-2">
+        <a href="#" class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary rounded-xl transition-all duration-300 cursor-pointer no-underline group">
+            <span class="material-symbols-outlined text-[20px] group-hover:rotate-45 transition-transform duration-300">settings</span>
+            <span class="font-semibold text-sm">Settings</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-red-50 hover:text-error rounded-xl transition-all duration-300 cursor-pointer no-underline group">
+            <span class="material-symbols-outlined text-[20px] group-hover:translate-x-0.5 transition-transform duration-300">logout</span>
+            <span class="font-semibold text-sm">Logout</span>
+        </a>
+    </div>
+</aside>

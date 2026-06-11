@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>StockFlow Pro - New Challan</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Hanken Grotesk', sans-serif; -webkit-font-smoothing: antialiased; }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#505f76", "inverse-primary": "#b7c8e1", "on-tertiary-fixed": "#2a1801",
+                        "surface-variant": "#e4e2e4", "surface": "#fbf9fa", "on-tertiary-container": "#fff9f5",
+                        "secondary-container": "#d2e1f7", "on-primary-container": "#f9f9ff", "on-primary-fixed": "#0b1c30",
+                        "on-primary-fixed-variant": "#38485d", "surface-dim": "#dbd9db", "inverse-on-surface": "#f2f0f2",
+                        "on-secondary-fixed-variant": "#39485a", "secondary-fixed": "#d4e4fa", "on-tertiary": "#ffffff",
+                        "secondary": "#516072", "tertiary-container": "#8a6e4c", "surface-bright": "#fbf9fa",
+                        "secondary-fixed-dim": "#b9c8de", "on-surface-variant": "#44474c", "on-background": "#1b1b1d",
+                        "on-secondary-container": "#556477", "surface-container-lowest": "#ffffff", "inverse-surface": "#303032",
+                        "on-error-container": "#93000a", "on-tertiary-fixed-variant": "#5a4224", "primary-fixed-dim": "#b7c8e1",
+                        "tertiary-fixed-dim": "#e3c199", "primary-container": "#64748b", "error-container": "#ffdad6",
+                        "on-surface": "#1b1b1d", "primary-fixed": "#d3e4fe", "surface-container-low": "#f5f3f5",
+                        "on-primary": "#ffffff", "outline": "#74777d", "on-secondary": "#ffffff", "outline-variant": "#c4c6cd",
+                        "tertiary": "#6f5636", "on-error": "#ffffff", "on-secondary-fixed": "#0d1c2d",
+                        "surface-container-highest": "#e4e2e4", "error": "#ba1a1a", "background": "#fbf9fa",
+                        "tertiary-fixed": "#ffddb6", "primary": "#4c5b71", "surface-container": "#efedef", "surface-container-high": "#eae7e9"
+                    },
+                    "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    "spacing": { "margin-mobile": "16px", "lg": "2rem", "base": "4px", "md": "1.5rem", "gutter": "24px", "margin-desktop": "32px", "xs": "0.5rem", "xl": "3rem", "sm": "1rem" },
+                    "fontFamily": { "label-md": ["Hanken Grotesk"], "code-sm": ["jetbrainsMono"], "body-md": ["Hanken Grotesk"], "headline-md": ["Hanken Grotesk"], "body-lg": ["Hanken Grotesk"], "headline-lg": ["Hanken Grotesk"], "headline-lg-mobile": ["Hanken Grotesk"] },
+                    "fontSize": { "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}], "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}], "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}], "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}], "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}], "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}], "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}] }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="bg-[#fbf9fa] text-[#1b1b1d]">
+
+    <div id="sidebar-container"></div>
+
+    <header class="h-16 sticky top-0 z-40 ml-[280px] bg-[#fbf9fa] flex justify-between items-center px-8 w-[calc(100%-280px)] shadow-sm border-b border-gray-100">
+        <h2 class="text-xl font-bold text-[#1b1b1d]">Create New Challan</h2>
+    </header>
+
+    <main class="ml-[280px] p-8 min-h-screen">
+        <form id="challanForm" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-6 max-w-5xl mx-auto">
+            
+            <div>
+                <h3 class="text-sm font-bold text-[#4c5b71] mb-4 border-b pb-2 uppercase tracking-wider">Master Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Challan Number</label>
+                        <input type="text" id="challan_number" disabled class="border-gray-200 bg-gray-50 rounded-lg text-sm text-gray-400 cursor-not-allowed" placeholder="Auto-generated">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Operation Type</label>
+                        <select id="type" required class="border-gray-300 rounded-lg focus:ring-[#4c5b71] text-sm">
+                            <option value="Out">Outbound (Sale)</option>
+                            <option value="In">Inbound (Purchase)</option>
+                            <option value="Sales Return">Sales Return</option>
+                            <option value="Purchase Return">Purchase Return</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Party (Vendor/Customer)</label>
+                        <input type="text" id="party_name" required class="border-gray-300 rounded-lg focus:ring-[#4c5b71] text-sm" placeholder="e.g. Apex Retailers">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Date</label>
+                        <input type="date" id="date" required class="border-gray-300 rounded-lg focus:ring-[#4c5b71] text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <h3 class="text-sm font-bold text-[#4c5b71] uppercase tracking-wider">Inventory Items</h3>
+                    <button type="button" id="addRowBtn" class="bg-[#d3e4fe] text-[#0b1c30] px-3 py-1 rounded-lg text-xs font-bold hover:bg-[#b7c8e1] transition-colors shadow-sm">+ Add Item Row</button>
+                </div>
+                
+                <table class="w-full text-left border-collapse" id="itemsTable">
+                    <thead>
+                        <tr class="bg-gray-50 text-[11px] text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                            <th class="p-3 w-1/2">Item Name / SKU</th>
+                            <th class="p-3 w-1/6">Quantity</th>
+                            <th class="p-3 w-1/6">Rate ($)</th>
+                            <th class="p-3 w-1/12 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-end pt-4 border-t mt-4 gap-3">
+                <button type="button" onclick="window.history.back()" class="px-5 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors">Cancel</button>
+                <button type="submit" id="submitBtn" class="bg-[#4c5b71] text-white px-6 py-2 rounded-lg font-bold shadow-sm hover:bg-[#38485d] transition-colors text-sm flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">save</span> Save Transaction
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script type="module" src="./js/newentry.js"></script>
+</body>
+</html>
