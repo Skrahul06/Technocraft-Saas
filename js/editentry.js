@@ -1,7 +1,7 @@
 // js/editentry.js
 import { loadSidebar } from './layout.js';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://technocraft-saas.onrender.com/api';
 let availableProductsCache = []; 
 
 // Capture the target string identifier from the URL bar parameters (?id=XXXXXX)
