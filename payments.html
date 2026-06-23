@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Financial Ledger & Payments | Technocraft</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Hanken Grotesk', sans-serif; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e4e2e4; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; }
+        @media (max-width: 1023px) {
+            .sidebar-open #sidebar-wrapper { transform: translateX(0); }
+            .sidebar-open #sidebar-overlay { opacity: 1; visibility: visible; }
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#4c5b71", "surface-container-low": "#222226" } } } }
+    </script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); } else { document.documentElement.classList.remove('dark'); }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-[#0f0f11] text-gray-900 dark:text-gray-100 flex transition-colors duration-300 overflow-hidden h-screen">
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 invisible transition-all duration-300 z-40 lg:hidden"></div>
+    <div id="sidebar-wrapper" class="fixed top-0 bottom-0 left-0 w-[280px] h-screen bg-white dark:bg-[#1a1a1e] z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 border-r border-gray-200/50 dark:border-gray-800 shadow-2xl lg:shadow-none">
+        <div id="sidebar-container" class="h-full w-full"></div>
+    </div>
+
+    <main class="flex-1 min-w-0 ml-0 lg:ml-[280px] h-screen overflow-y-auto relative transition-all duration-300 flex flex-col bg-[#f1f3f6] dark:bg-[#0f0f11] custom-scrollbar">
+        
+        <header class="h-16 sticky top-0 z-40 bg-[#f4f5f7]/90 dark:bg-[#0f0f11]/90 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 border-b border-gray-200/60 dark:border-gray-800 transition-all shrink-0">
+            <div class="flex items-center gap-2 md:gap-3 shrink-0 z-10 w-[60%] sm:w-auto">
+                <button id="mobile-menu-toggle" class="material-symbols-outlined text-gray-500 dark:text-gray-400 p-1.5 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full lg:hidden transition-colors">menu</button>
+                <h2 class="text-base md:text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-50 whitespace-nowrap truncate">Financial Ledger</h2>
+            </div>
+            <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+                <button id="theme-toggle" class="material-symbols-outlined text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 p-1.5 rounded-full">light_mode</button>
+            </div>
+        </header>
+
+        <div class="p-4 md:p-6 lg:p-8 max-w-5xl mx-auto w-full flex-grow space-y-6">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">Log Transaction</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Record incoming receipts and outgoing vendor payments.</p>
+                </div>
+            </div>
+
+            <section class="bg-white dark:bg-[#1a1a1e] border border-gray-200 dark:border-gray-800 p-5 md:p-8 rounded-[1.5rem] shadow-sm transition-colors">
+                <form id="paymentForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Transaction Type <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="payment_type" value="In" class="peer sr-only" checked>
+                                    <div class="w-full text-center px-4 py-3 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 peer-checked:bg-emerald-50 peer-checked:dark:bg-emerald-500/10 peer-checked:border-emerald-500 peer-checked:text-emerald-700 peer-checked:dark:text-emerald-400 transition-all">Receipt (Money In)</div>
+                                </label>
+                                <label class="cursor-pointer relative">
+                                    <input type="radio" name="payment_type" value="Out" class="peer sr-only">
+                                    <div class="w-full text-center px-4 py-3 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 peer-checked:bg-red-50 peer-checked:dark:bg-red-500/10 peer-checked:border-red-500 peer-checked:text-red-700 peer-checked:dark:text-red-400 transition-all">Payment (Money Out)</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Entity / Party <span class="text-red-500">*</span></label>
+                            <select id="party_id" required class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
+                                <option value="">Loading parties...</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Amount (INR) <span class="text-red-500">*</span></label>
+                            <input type="number" id="amount" step="0.01" min="1" required class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-lg font-mono font-bold focus:ring-2 focus:ring-primary outline-none transition-colors">
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="payment_date" required style="color-scheme: light dark;" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Payment Mode</label>
+                            <select id="payment_mode" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
+                                <option value="Bank Transfer">Bank Transfer (NEFT/RTGS)</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Cash">Cash</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Ref / UTR Number</label>
+                            <input type="text" id="reference_number" placeholder="Txn ID, Cheque No, etc." class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end pt-4 border-t border-gray-100 dark:border-gray-800">
+                        <button type="submit" id="submitBtn" class="bg-primary dark:bg-blue-600 text-white font-bold px-8 py-3 rounded-xl hover:bg-slate-800 dark:hover:bg-blue-500 transition-all shadow-md active:scale-95 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span> Save Transaction
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="./js/payments.js"></script>
+</body>
+</html>

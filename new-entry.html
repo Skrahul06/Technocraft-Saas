@@ -1,150 +1,240 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html class="dark" lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Technocraft - Entry Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Technocraft - New Entry</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+    
     <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         body { font-family: 'Hanken Grotesk', sans-serif; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e4e2e4; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; }
+
+        @media (max-width: 1023px) {
+            .sidebar-open #sidebar-wrapper { transform: translateX(0); }
+            .sidebar-open #sidebar-overlay { opacity: 1; visibility: visible; }
+        }
+
+        .dark input:-webkit-autofill,
+        .dark input:-webkit-autofill:hover, 
+        .dark input:-webkit-autofill:focus, 
+        .dark input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 40px #0f0f11 inset !important;
+            -webkit-text-fill-color: #f3f4f6 !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
     </style>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "surface-tint": "#505f76", "inverse-primary": "#b7c8e1", "on-tertiary-fixed": "#2a1801",
-                        "surface-variant": "#e4e2e4", "surface": "#fbf9fa", "on-tertiary-container": "#fff9f5",
-                        "secondary-container": "#d2e1f7", "on-primary-container": "#f9f9ff", "on-primary-fixed": "#0b1c30",
-                        "on-primary-fixed-variant": "#38485d", "surface-dim": "#dbd9db", "inverse-on-surface": "#f2f0f2",
-                        "on-secondary-fixed-variant": "#39485a", "secondary-fixed": "#d4e4fa", "on-tertiary": "#ffffff",
-                        "secondary": "#516072", "tertiary-container": "#8a6e4c", "surface-bright": "#fbf9fa",
-                        "secondary-fixed-dim": "#b9c8de", "on-surface-variant": "#44474c", "on-background": "#1b1b1d",
-                        "on-secondary-container": "#556477", "surface-container-lowest": "#ffffff", "inverse-surface": "#303032",
-                        "on-error-container": "#93000a", "on-tertiary-fixed-variant": "#5a4224", "primary-fixed-dim": "#b7c8e1",
-                        "tertiary-fixed-dim": "#e3c199", "primary-container": "#64748b", "error-container": "#ffdad6",
-                        "on-surface": "#1b1b1d", "primary-fixed": "#d3e4fe", "surface-container-low": "#f5f3f5",
-                        "on-primary": "#ffffff", "outline": "#74777d", "on-secondary": "#ffffff", "outline-variant": "#c4c6cd",
-                        "tertiary": "#6f5636", "on-error": "#ffffff", "on-secondary-fixed": "#0d1c2d",
-                        "surface-container-highest": "#e4e2e4", "error": "#ba1a1a", "background": "#fbf9fa",
-                        "tertiary-fixed": "#ffddb6", "primary": "#4c5b71", "surface-container": "#efedef"
-                    },
-                    "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
-                    "spacing": { "margin-mobile": "16px", "lg": "2rem", "base": "4px", "md": "1.5rem", "gutter": "24px", "margin-desktop": "32px", "xs": "0.5rem", "xl": "3rem", "sm": "1rem" },
-                    "fontFamily": {
-                        "label-md": ["Hanken Grotesk"], "code-sm": ["jetbrainsMono"], "body-md": ["Hanken Grotesk"],
-                        "headline-md": ["Hanken Grotesk"], "body-lg": ["Hanken Grotesk"], "headline-lg": ["Hanken Grotesk"],
-                        "headline-lg-mobile": ["Hanken Grotesk"]
-                    },
-                    "fontSize": {
-                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
-                        "code-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
-                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
-                    }
-                }
-            }
+            theme: { extend: { colors: { primary: "#4c5b71" } } }
         }
     </script>
 </head>
-<body class="bg-background text-on-background relative">
+<body class="bg-gray-50 dark:bg-[#0f0f11] font-sans text-gray-900 dark:text-gray-100 antialiased overflow-x-hidden transition-colors duration-300">
+    
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm opacity-0 invisible transition-all duration-300 z-40 lg:hidden"></div>
 
-    <div id="sidebar-container"></div>
+    <div id="sidebar-wrapper" class="fixed top-0 bottom-0 left-0 w-[280px] h-screen bg-white dark:bg-[#1a1a1e] z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out border-r border-gray-200/50 dark:border-gray-800 shadow-2xl lg:shadow-none">
+        <div id="sidebar-container" class="h-full w-full"></div>
+    </div>
 
-    <header class="h-16 sticky top-0 z-40 ml-[280px] bg-background/90 backdrop-blur-md flex justify-between items-center px-margin-desktop w-[calc(100%-280px)] border-b border-surface-container-low transition-all">
-        <div class="flex items-center w-1/3">
-            <button onclick="window.history.back()" class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-semibold text-sm">
-                <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back
-            </button>
-        </div>
-        <h2 class="absolute left-1/2 -translate-x-1/2 font-headline-md text-xl font-bold text-on-surface whitespace-nowrap" id="header-title">New Entry</h2>
-        <div class="flex items-center justify-end w-1/3 gap-4">
-            <div class="h-10 w-10 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden border border-surface-dim">
-                <img alt="Manager Avatar" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUVVNY6j7Epofems6gnzxGIqPtIh7L84Mmo2KGXgI5pN0ay7N8KorHhNDtLcDkJ_hrg53GGHYD1aS1pALgQgn-w0LUV1FmN3pByIwaoYndPJXYMIj6cf7dZACPDDXsIeMfYYvc4W_E-j0pjYoOyrO1oOeHak_6uJx-OHMA-ssh-4VCl8pSX9UbpFbFfssOrrZZGYVf97CyFHckA-VLQPWUWsAEzzyMNUoZcJ506_N8pATIjH9JvPHN1jMkkgPhooG7Y7YgJ5CUdymp"/>
+    <div class="min-h-screen flex flex-col lg:pl-[280px] w-full transition-all duration-300">
+        
+        <header class="h-16 sticky top-0 z-30 bg-white/90 dark:bg-[#0f0f11]/90 backdrop-blur-md flex items-center justify-between px-4 lg:hidden border-b border-gray-200/60 dark:border-gray-800 transition-colors">
+            <div class="flex items-center gap-3">
+                <button id="mobile-menu-toggle" class="material-symbols-outlined text-gray-500 dark:text-gray-400 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">menu</button>
+                <h2 class="font-bold text-lg text-gray-900 dark:text-gray-100 tracking-tight">New Entry</h2>
             </div>
-        </div>
-    </header>
+            <button onclick="window.history.back()" class="flex items-center text-sm font-semibold text-primary dark:text-blue-400 px-2 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Cancel</button>
+        </header>
 
-    <main class="ml-[280px] p-margin-desktop min-h-screen">
-       <div class="max-w-4xl mx-auto">
-            
-            <div class="mb-8">
-                <h3 class="text-2xl font-bold text-on-surface" id="page-title">Create New Challan</h3>
-                <p class="text-sm text-on-surface-variant mt-1">Fill out the operation details below to register it in the database.</p>
-            </div>
-
-            <form id="entry-form" class="bg-surface-container-lowest rounded-2xl border border-surface-dim shadow-sm p-8 space-y-6">
+        <main class="flex-1 p-4 md:p-8 w-full max-w-[100vw]">
+            <div class="max-w-4xl mx-auto">
                 
-                <div class="grid grid-cols-2 gap-6">
+                <div class="hidden lg:flex items-center justify-between mb-8">
                     <div>
-                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Billed Entity / Party Name</label>
-                        <input type="text" id="party_name" required class="w-full bg-surface-container-low border border-surface-dim rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none" placeholder="e.g. Apex Retailers">
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">Create New Challan</h1>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Register logistics movements and generate compliant transit documents.</p>
                     </div>
-                    
-                    <div>
-                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Operation Type</label>
-                        <select id="type" required class="w-full bg-surface-container-low border border-surface-dim rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none">
-                            <option value="Out">Customer Outbound (Sales)</option>
-                            <option value="In">Vendor Inbound (Purchase)</option>
-                            <option value="Sales Return">Sales Return</option>
-                            <option value="Purchase Return">Purchase Return</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-6 border-t border-surface-container-low pt-6">
-                    <div>
-                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Item Allocation</label>
-                        <select id="entry-product-select" required class="w-full bg-surface-container-low border border-surface-dim rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none">
-                            <option value="">Choose item component link...</option>
-                            <option value="1">Industrial Control Panel Enclosure (SKU-ELEC-042)</option>
-                            <option value="2">High-Tensile Steel Bolts (M12) (SKU-MECH-001)</option>
-                            <option value="3">Pneumatic Air Pressure Regulator (SKU-PNEU-089)</option>
-                            <option value="4">Heavy-Duty Nitrile Protective Gloves (SKU-SFTY-112)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Operation Movement Quantity</label>
-                        <input type="number" id="entry-product-qty" min="1" value="1" required class="w-full bg-surface-container-low border border-surface-dim rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none" placeholder="Units volume amount">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-6 border-t border-surface-container-low pt-6">
-                    <div>
-                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Net Amount (USD)</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold">$</span>
-                            <input type="number" id="total_amount" step="0.01" required class="w-full bg-surface-container-low border border-surface-dim rounded-lg py-3 pl-8 pr-4 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none" placeholder="0.00">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-bold text-on-surface-variant mb-2">Payment Status</label>
-                        <select id="status" required class="w-full bg-surface-container-low border border-surface-dim rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none">
-                            <option value="Pending">Pending</option>
-                            <option value="Paid">Paid</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="pt-6 mt-6 border-t border-surface-container-low flex justify-end gap-3">
-                    <button type="button" onclick="window.history.back()" class="px-6 py-3 rounded-lg font-bold text-on-surface-variant hover:bg-surface-container-low transition-colors">Cancel</button>
-                    <button type="submit" id="submit-btn" class="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors shadow-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">save</span> <span id="btn-text">Save Entry</span>
+                    <button onclick="window.history.back()" class="flex items-center gap-2 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors">
+                        <span class="material-symbols-outlined text-lg">arrow_back</span> Back
                     </button>
                 </div>
-            </form>
 
-        </div>
-    </main>
+                <form id="challanForm" class="space-y-5 md:space-y-8 pb-10">
+                    
+                    <section class="bg-white dark:bg-[#1a1a1e] p-5 md:p-8 rounded-[1.5rem] shadow-sm dark:shadow-none border border-gray-200 dark:border-gray-800 transition-colors">
+                        <h2 class="text-[11px] font-bold uppercase text-gray-400 dark:text-gray-500 tracking-widest mb-5 md:mb-6">1. Operation Context</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Operation Type</label>
+                                <select id="type" required class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors cursor-pointer leading-normal">
+                                    <option value="Out">Customer Outbound (Sales)</option>
+                                    <option value="In">Vendor Inbound (Purchase)</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Issue Date</label>
+                                <input type="date" id="date" required style="color-scheme: light dark;" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Manual Challan # (Optional)</label>
+                                <input type="text" id="challan_number" placeholder="Auto-generated if left blank" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Reference Order / PO (Optional)</label>
+                                <input type="text" id="order_id" placeholder="e.g. PO-2026-99" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                        </div>
+                    </section>
 
-    <script type="module" src="./js/newentry.js"></script>
+                    <section class="bg-white dark:bg-[#1a1a1e] p-5 md:p-8 rounded-[1.5rem] shadow-sm dark:shadow-none border border-gray-200 dark:border-gray-800 transition-colors">
+                        <h2 class="text-[11px] font-bold uppercase text-gray-400 dark:text-gray-500 tracking-widest mb-5 md:mb-6">2. Billing Entity Details</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Entity Name <span class="text-error">*</span></label>
+                                <input type="text" id="party_name" required class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">GST Number (Optional)</label>
+                                <input type="text" id="party_gst" placeholder="GSTIN" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                            <div class="flex flex-col gap-1.5 md:col-span-2">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Payment Terms (Credit Period)</label>
+                                <select id="payment_terms" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors cursor-pointer leading-normal">
+                                    <option value="Immediate">Immediate / Advance</option>
+                                    <option value="15 Days">Net 15 Days</option>
+                                    <option value="30 Days" selected>Net 30 Days</option>
+                                    <option value="45 Days">Net 45 Days</option>
+                                    <option value="60 Days">Net 60 Days</option>
+                                    <option value="90 Days">Net 90 Days</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Phone Numbers</label>
+                                    <button type="button" class="add-phone-btn text-xs font-bold text-primary dark:text-blue-400 hover:text-blue-600 transition-colors">+ Add Phone</button>
+                                </div>
+                                <div id="phone-container" class="flex flex-col gap-2">
+                                    <input type="tel" pattern="[0-9+\\- ]{10,15}" class="party-phone w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal" placeholder="Primary Phone">
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Email Addresses</label>
+                                    <button type="button" class="add-email-btn text-xs font-bold text-primary dark:text-blue-400 hover:text-blue-600 transition-colors">+ Add Email</button>
+                                </div>
+                                <div id="email-container" class="flex flex-col gap-2">
+                                    <input type="email" class="party-email w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal" placeholder="Primary Email">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-white dark:bg-[#1a1a1e] p-5 md:p-8 rounded-[1.5rem] shadow-sm dark:shadow-none border border-gray-200 dark:border-gray-800 transition-colors">
+                        <h2 class="text-[11px] font-bold uppercase text-gray-400 dark:text-gray-500 tracking-widest mb-5 md:mb-6">3. Transit & Logistics</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Logistics Status</label>
+                                <select id="logistics_status" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors cursor-pointer leading-normal">
+                                    <option value="Processing">Processing</option>
+                                    <option value="Dispatched" selected>Dispatched / In Transit</option>
+                                    <option value="Delivered">Delivered</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Transporter / Courier</label>
+                                <input type="text" id="transporter" placeholder="e.g. Blue Dart, Self" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Vehicle Number</label>
+                                <input type="text" id="vehicle_number" placeholder="e.g. WB-11-C-9988" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm uppercase focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">LR / Tracking Number</label>
+                                <input type="text" id="lr_number" placeholder="Lorry Receipt No." class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                            <div class="flex flex-col gap-1.5 md:col-span-2">
+                                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">E-Way Bill Number (If > ₹50,000)</label>
+                                <input type="text" id="eway_bill" placeholder="12-digit E-Way Bill Number" class="w-full h-[48px] px-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors leading-normal">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-white dark:bg-[#1a1a1e] p-5 md:p-8 rounded-[1.5rem] shadow-sm dark:shadow-none border border-gray-200 dark:border-gray-800 transition-colors flex flex-col w-full overflow-hidden">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 md:mb-6">
+                            <h2 class="text-[11px] font-bold uppercase text-gray-400 dark:text-gray-500 tracking-widest">4. Inventory Logs</h2>
+                            <button type="button" id="addRowBtn" class="w-full sm:w-auto flex items-center justify-center gap-1.5 text-[11px] font-bold text-primary dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 px-3 py-1.5 rounded-lg transition-all active:scale-95 uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-[14px] font-bold">add</span> Add Row
+                            </button>
+                        </div>
+                        
+                        <div class="overflow-x-auto w-full custom-scrollbar border border-gray-200 dark:border-gray-800 rounded-2xl transition-colors pb-2" style="-webkit-overflow-scrolling: touch;">
+                            <table class="w-full text-left min-w-[800px]">
+                                <thead class="bg-gray-50 dark:bg-[#222226] border-b border-gray-200 dark:border-gray-800 transition-colors">
+                                    <tr class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                        <th class="p-4 w-[35%] min-w-[200px]">Product SKU</th>
+                                        <th class="p-4 w-[15%] min-w-[100px]">HSN/SAC</th>
+                                        <th class="p-4 w-[15%] min-w-[100px]">Quantity</th>
+                                        <th class="p-4 w-[15%] min-w-[120px]">Unit</th>
+                                        <th class="p-4 w-[15%] min-w-[120px]">Unit Price</th>
+                                        <th class="p-4 w-12 text-center"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemsBody" class="divide-y divide-gray-100 dark:divide-gray-800/50"></tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="bg-white dark:bg-[#1a1a1e] p-5 md:p-8 rounded-[1.5rem] shadow-sm dark:shadow-none border border-gray-200 dark:border-gray-800 transition-colors">
+                        <h2 class="text-[11px] font-bold uppercase text-gray-400 dark:text-gray-500 tracking-widest mb-4">5. Remarks & Notes</h2>
+                        <textarea id="remarks" rows="3" placeholder="Enter delivery instructions, transit notes, or exception remarks..." class="w-full p-4 bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-primary dark:focus:ring-blue-500/50 outline-none transition-colors resize-none"></textarea>
+                    </section>
+
+                    <div class="flex pt-2">
+                        <button type="submit" id="submitBtn" class="w-full sm:w-auto sm:ml-auto bg-primary dark:bg-blue-600 text-white font-bold px-10 py-4 md:py-3.5 rounded-2xl shadow-md dark:shadow-none hover:bg-slate-800 dark:hover:bg-blue-500 transition-all active:scale-95 text-center flex justify-center items-center text-sm tracking-wide gap-2">
+                            <span class="material-symbols-outlined text-[18px]">save</span> Post Transaction
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+        
+        <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggleBtn = document.getElementById('mobile-menu-toggle');
+            const sideOverlay = document.getElementById('sidebar-overlay');
+            const rootHtml = document.documentElement;
+
+            const toggleSidebarState = () => rootHtml.classList.toggle('sidebar-open');
+
+            if (menuToggleBtn && sideOverlay) {
+                menuToggleBtn.addEventListener('click', toggleSidebarState);
+                sideOverlay.addEventListener('click', toggleSidebarState);
+            }
+        });
+    </script>
+    <script type="module" src="js/newentry.js"></script>
 </body>
 </html>
