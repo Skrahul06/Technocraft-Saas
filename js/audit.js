@@ -1,5 +1,6 @@
 // js/audit.js
-const API_BASE = 'http://localhost:5000/api';
+ const API_BASE = 'https://technocraft-saas.onrender.com/api';
+//const API_BASE = 'http://localhost:5000/api';
 
 async function loadAuditLogs(page = 1) {
     const logsBody = document.getElementById('logs-body');
