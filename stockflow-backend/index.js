@@ -22,11 +22,11 @@ app.use(express.json());
 
 // --- FRONTEND ROUTING FIX ---
 // 2. Tell Express to serve your HTML, CSS, and JS files from the root directory
-app.use(express.static(path.join(__dirname, '/'))); 
+app.use(express.static(path.join(__dirname, '../')));
 
 // 3. When someone visits the root URL, show them the index.html page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 
