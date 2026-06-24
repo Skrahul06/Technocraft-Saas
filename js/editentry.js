@@ -1,7 +1,8 @@
 // js/editentry.js
 import { loadSidebar } from './layout.js';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://technocraft-saas.onrender.com/api';
+//const API_BASE = 'http://localhost:5000/api';
 let availableProductsCache = []; 
 
 const urlParams = new URLSearchParams(window.location.search);
