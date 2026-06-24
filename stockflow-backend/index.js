@@ -1,9 +1,10 @@
 // index.js
- //--- TOP OF FILE: Setup & Configuration ---
+//--- TOP OF FILE: Setup & Configuration ---
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path'); // <-- 1. ADDED THIS
 require('dotenv').config();
 
 // Define PORT immediately after importing dotenv
@@ -19,7 +20,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// index.js (Place this after your routes are defined)
+// --- FRONTEND ROUTING FIX ---
+// 2. Tell Express to serve your HTML, CSS, and JS files from the root directory
+app.use(express.static(path.join(__dirname, '/'))); 
+
+// 3. When someone visits the root URL, show them the index.html page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 
 // index.js - REFINED AUDIT LOGGING MIDDLEWARE
 app.use(async (req, res, next) => {
@@ -62,6 +71,8 @@ app.use(async (req, res, next) => {
 
     next();
 });
+
+// ... The rest of your API routes go here ...
 // --- ROUTES ---
 app.get('/api/admin/logs', authenticate, authorizeAdmin, async (req, res) => {
     // Default to page 1, show 50 items per page
