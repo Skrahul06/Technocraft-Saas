@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:5000/api';
+ const API_BASE = 'https://technocraft-saas.onrender.com/api';
+//const API_BASE = 'http://localhost:5000/api';
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
