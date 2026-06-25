@@ -1,16 +1,44 @@
 // js/dashboard.js
-const API_BASE = 'https://technocraft-saas.onrender.com/api';
-//const API_BASE = 'http://localhost:5000/api';
-import { loadSidebar, setupLogout } from './layout.js';
+import { loadSidebar, setupLogout, showLoader, hideLoader } from './layout.js';
+
+// --- AUTOMATIC ENVIRONMENT DETECTOR ---
+let API_BASE;
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    API_BASE = 'http://localhost:5000/api'; // Local Node.js server
+} else {
+    API_BASE = 'https://technocraft-saas.onrender.com/api'; // Live Render server
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadSidebar();
-    setupLogout(); // <--- This activates the logout button
+    // 1. Turn on the loader immediately when the page starts loading
+    showLoader(); 
+
+    try {
+        await loadSidebar();
+        setupLogout();
+        
+        // 2. Call whatever function you use to fetch your chart data here
+        await fetchDashboardData(); 
+        
+    } catch (error) {
+        console.error("Dashboard failed to load:", error);
+    } finally {
+        // 3. Turn off the loader only AFTER everything is completely done
+        hideLoader();
+    }
 });
 
 let dashboardData = {};
 let lineChartInstance = null;
 let pieChartInstance = null;
+
+// Example of how your fetch function should look:
+async function fetchDashboardData() {
+    // Note: You don't need showLoader() here because we already started it in DOMContentLoaded
+    const response = await fetch(`${API_BASE}/dashboard-stats`, { /* headers */ });
+    dashboardData = await response.json();
+    // ... draw charts ...
+}
 
 // --- CHART DARK MODE HELPERS ---
 const isDark = () => document.documentElement.classList.contains('dark');

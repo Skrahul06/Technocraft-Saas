@@ -1,5 +1,69 @@
 // js/layout.js
 
+// --- GLOBAL LOADER SYSTEM ---
+function injectGlobalLoader() {
+    // Prevent injecting it twice
+    if (document.getElementById('global-loader-overlay')) return;
+
+    // 1. Inject the CSS styles directly into the document head
+    const loaderStyle = `
+        <style>
+            .loader {
+                height: 60px;
+                aspect-ratio: 2;
+                border-bottom: 3px solid #0000;
+                background: 
+                    linear-gradient(90deg,#524656 50%,#0000 0)
+                    -25% 100%/50% 3px repeat-x border-box;
+                position: relative;
+                animation: l3-0 .75s linear infinite;
+            }
+            .loader:before {
+                content: "";
+                position: absolute;
+                inset: auto 42.5% 0;
+                aspect-ratio: 1;
+                border-radius: 50%;
+                background: #4c5b71; /* Changed to your theme's primary color! */
+                animation: l3-1 .75s cubic-bezier(0,900,1,900) infinite;
+            }
+            @keyframes l3-0 {
+                to {background-position: -125% 100%}
+            }
+            @keyframes l3-1 {
+                0%,2% {bottom: 0%}
+                98%,to {bottom:.1%}
+            }
+        </style>
+    `;
+
+    // 2. Inject the Loader HTML overlay
+    const loaderHTML = `
+        <div id="global-loader-overlay" class="fixed inset-0 z-[9999] bg-white/70 dark:bg-[#0f0f11]/80 backdrop-blur-sm flex items-center justify-center opacity-0 invisible transition-all duration-300">
+            <div class="loader"></div>
+        </div>
+    `;
+    
+    document.head.insertAdjacentHTML('beforeend', loaderStyle);
+    document.body.insertAdjacentHTML('beforeend', loaderHTML);
+}
+
+// Initialize the loader as soon as this file is read
+injectGlobalLoader();
+
+// Export the controls so other files can turn it on and off
+export function showLoader() {
+    const overlay = document.getElementById('global-loader-overlay');
+    if (overlay) overlay.classList.remove('opacity-0', 'invisible');
+}
+
+export function hideLoader() {
+    const overlay = document.getElementById('global-loader-overlay');
+    if (overlay) overlay.classList.add('opacity-0', 'invisible');
+}
+
+
+// --- EXISTING SIDEBAR & LOGOUT LOGIC ---
 export async function loadSidebar() {
     try {
         const response = await fetch('sidebar.html');
@@ -48,17 +112,13 @@ export async function loadSidebar() {
     }
 }
 
-// --- NEW: Logout Functionality ---
 export function setupLogout() {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            // Clear all sensitive data
             localStorage.removeItem('token');
             localStorage.removeItem('user_role');
-            
-            // Redirect to login page
             window.location.href = 'login.html';
         });
     }
