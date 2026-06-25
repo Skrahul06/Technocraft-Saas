@@ -200,7 +200,7 @@ async function handleFormSubmit(e) {
     const aggregatedItems = [];
     let validationFailed = false;
 
-    itemRows.forEach(row => {
+    itemRows.forEach((row, index) => {
         const selectMenu = row.querySelector('.product-sku-select');
         const hsnInput = row.querySelector('.product-hsn-input');
         const quantityInput = row.querySelector('.product-qty-input');
@@ -208,9 +208,19 @@ async function handleFormSubmit(e) {
         const rateInput = row.querySelector('.product-rate-input');
 
         if (selectMenu && selectMenu.value) {
+            const productId = parseInt(selectMenu.value);
             const qty = parseInt(quantityInput.value);
             const rate = parseFloat(rateInput.value);
 
+            // --- BUG CATCHER 1: Detect Invalid Product IDs ---
+            if (isNaN(productId)) {
+                console.error(`🚨 Row ${index + 1} Error: Invalid Product ID detected ("${selectMenu.value}"). It must be an integer.`);
+                showToast(`System Error on Row ${index + 1}. Check console.`, 'error');
+                validationFailed = true;
+                return;
+            }
+
+            // --- BUG CATCHER 2: Detect Invalid Quantities ---
             if (isNaN(qty) || qty <= 0) {
                 showToast("Quantity must be greater than 0.", 'error');
                 validationFailed = true;
@@ -218,7 +228,7 @@ async function handleFormSubmit(e) {
             }
 
             aggregatedItems.push({
-                product_id: parseInt(selectMenu.value),
+                product_id: productId,
                 hsn_code: hsnInput.value.trim(),
                 quantity: qty,
                 unit_type: unitSelect.value, 
@@ -258,6 +268,13 @@ async function handleFormSubmit(e) {
         items: aggregatedItems
     };
 
+    // --- BUG CATCHER 3: The Pre-Flight Payload Log ---
+    // This prints your exact data to the console before it hits the server.
+    console.group("🚀 Pre-Flight Data Check");
+    console.log("Master Payload:", payload);
+    console.table(payload.items);
+    console.groupEnd();
+
     try {
         const response = await fetch(`${API_BASE}/challans`, {
             method: 'POST',
@@ -272,7 +289,10 @@ async function handleFormSubmit(e) {
         
         showToast("Entry posted successfully!", "success");
         setTimeout(() => window.location.href = 'challan.html', 1500);
+        
     } catch (error) {
+        // --- BUG CATCHER 4: Enhanced Error Logging ---
+        console.error("❌ API Submission Blocked:", error.message);
         showToast(error.message, "error");
         resetButtonState(submitBtn);
     }
