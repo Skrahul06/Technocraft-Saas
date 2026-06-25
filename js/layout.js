@@ -1,13 +1,39 @@
 // js/layout.js
 
-// --- GLOBAL LOADER SYSTEM ---
+// --- GLOBAL LOADER SYSTEM (Bulletproof CSS Version) ---
 function injectGlobalLoader() {
-    // Prevent injecting it twice
     if (document.getElementById('global-loader-overlay')) return;
 
-    // 1. Inject the CSS styles directly into the document head
+    // 1. Pure CSS for the overlay (bypasses Tailwind CDN issues)
     const loaderStyle = `
         <style>
+            #global-loader-overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 99999;
+                background-color: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+            
+            /* Dark Mode Support */
+            html.dark #global-loader-overlay {
+                background-color: rgba(15, 15, 17, 0.8);
+            }
+
+            /* Active State */
+            #global-loader-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            /* The Bouncing Loader */
             .loader {
                 height: 60px;
                 aspect-ratio: 2;
@@ -24,7 +50,7 @@ function injectGlobalLoader() {
                 inset: auto 42.5% 0;
                 aspect-ratio: 1;
                 border-radius: 50%;
-                background: #4c5b71; /* Changed to your theme's primary color! */
+                background: #4c5b71; 
                 animation: l3-1 .75s cubic-bezier(0,900,1,900) infinite;
             }
             @keyframes l3-0 {
@@ -37,9 +63,9 @@ function injectGlobalLoader() {
         </style>
     `;
 
-    // 2. Inject the Loader HTML overlay
+    // 2. Simple HTML (No Tailwind classes needed here anymore)
     const loaderHTML = `
-        <div id="global-loader-overlay" class="fixed inset-0 z-[9999] bg-white/70 dark:bg-[#0f0f11]/80 backdrop-blur-sm flex items-center justify-center opacity-0 invisible transition-all duration-300">
+        <div id="global-loader-overlay">
             <div class="loader"></div>
         </div>
     `;
@@ -48,20 +74,18 @@ function injectGlobalLoader() {
     document.body.insertAdjacentHTML('beforeend', loaderHTML);
 }
 
-// Initialize the loader as soon as this file is read
 injectGlobalLoader();
 
-// Export the controls so other files can turn it on and off
+// Export the controls
 export function showLoader() {
     const overlay = document.getElementById('global-loader-overlay');
-    if (overlay) overlay.classList.remove('opacity-0', 'invisible');
+    if (overlay) overlay.classList.add('active');
 }
 
 export function hideLoader() {
     const overlay = document.getElementById('global-loader-overlay');
-    if (overlay) overlay.classList.add('opacity-0', 'invisible');
+    if (overlay) overlay.classList.remove('active');
 }
-
 
 // --- EXISTING SIDEBAR & LOGOUT LOGIC ---
 export async function loadSidebar() {
@@ -74,17 +98,14 @@ export async function loadSidebar() {
         if (!container) return;
         container.innerHTML = html;
 
-        // --- FIX: CALL LOGOUT SETUP HERE AFTER HTML IS INJECTED ---
         setupLogout();
 
-        // Role-based filtering
         const userRole = localStorage.getItem('user_role');
         if (userRole !== 'admin') {
             const adminElements = document.querySelectorAll('.admin-only');
             adminElements.forEach(el => el.remove());
         }
 
-        // Active Link Logic
         let currentPage = window.location.pathname.split('/').pop() || "dashboard.html";
         if (currentPage === "index.html") currentPage = "dashboard.html";
 
@@ -106,6 +127,21 @@ export async function loadSidebar() {
                 if (icon) icon.style.fontVariationSettings = "'FILL' 0, 'wght' 400";
                 if (indicator) indicator.className = "active-indicator absolute left-0 top-1/4 bottom-1/4 w-1 bg-[#4c5b71] rounded-full transform -translate-x-full opacity-0 transition-all duration-300 ease-out";
             }
+
+            // --- SMOOTH PAGE TRANSITION INTERCEPTOR ---
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                // Only intercept actual internal links, not the current page
+                if (href && href !== '#' && !isMatch) {
+                    e.preventDefault(); 
+                    showLoader(); // Fire the loader immediately
+                    
+                    // Wait a tiny fraction of a second for the animation to kick in, then navigate
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 150); 
+                }
+            });
         });
     } catch (error) {
         console.error("Failed to load sidebar structure:", error);
