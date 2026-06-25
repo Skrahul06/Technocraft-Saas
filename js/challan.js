@@ -1,9 +1,12 @@
-// js/challan.js
-import { loadSidebar } from './layout.js';
+import { loadSidebar, setupLogout, showLoader, hideLoader } from './layout.js';
 
-
-const API_BASE = 'https://technocraft-saas.onrender.com/api';
-//const API_BASE = 'http://localhost:5000/api';
+// --- AUTOMATIC ENVIRONMENT DETECTOR ---
+let API_BASE;
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    API_BASE = 'http://localhost:5000/api';
+} else {
+    API_BASE = 'https://technocraft-saas.onrender.com/api';
+}
 let allChallans = []; 
 
 function getAuthHeaders() {

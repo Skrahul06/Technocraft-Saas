@@ -9,6 +9,8 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
     API_BASE = 'https://technocraft-saas.onrender.com/api'; // Live Render server
 }
 
+
+
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Turn on the loader immediately when the page starts loading
     showLoader(); 

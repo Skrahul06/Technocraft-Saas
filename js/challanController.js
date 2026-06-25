@@ -1,6 +1,6 @@
 // controllers/challanController.js
 
-const API_BASE = 'https://technocraft-saas.onrender.com/api';
+
 const db = require('../config/db'); 
 
 exports.createChallan = async (req, res) => {
