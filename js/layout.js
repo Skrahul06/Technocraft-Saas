@@ -4,7 +4,6 @@
 function injectGlobalLoader() {
     if (document.getElementById('global-loader-overlay')) return;
 
-    // 1. Pure CSS for the overlay (bypasses Tailwind CDN issues)
     const loaderStyle = `
         <style>
             #global-loader-overlay {
@@ -22,18 +21,15 @@ function injectGlobalLoader() {
                 transition: opacity 0.3s ease, visibility 0.3s ease;
             }
             
-            /* Dark Mode Support */
             html.dark #global-loader-overlay {
                 background-color: rgba(15, 15, 17, 0.8);
             }
 
-            /* Active State */
             #global-loader-overlay.active {
                 opacity: 1;
                 visibility: visible;
             }
 
-            /* The Bouncing Loader */
             .loader {
                 height: 60px;
                 aspect-ratio: 2;
@@ -63,7 +59,6 @@ function injectGlobalLoader() {
         </style>
     `;
 
-    // 2. Simple HTML (No Tailwind classes needed here anymore)
     const loaderHTML = `
         <div id="global-loader-overlay">
             <div class="loader"></div>
@@ -87,6 +82,13 @@ export function hideLoader() {
     if (overlay) overlay.classList.remove('active');
 }
 
+// FIX 2: BFCache / Browser Back Button safeguard
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        hideLoader();
+    }
+});
+
 // --- EXISTING SIDEBAR & LOGOUT LOGIC ---
 export async function loadSidebar() {
     try {
@@ -106,8 +108,10 @@ export async function loadSidebar() {
             adminElements.forEach(el => el.remove());
         }
 
-        let currentPage = window.location.pathname.split('/').pop() || "dashboard.html";
-        if (currentPage === "index.html") currentPage = "dashboard.html";
+        // FIX 3: Stripped query parameters to prevent active-link bugs
+        let rawPage = window.location.pathname.split('/').pop() || "dashboard.html";
+        let currentPage = rawPage.split('?')[0].split('#')[0]; 
+        if (currentPage === "index.html" || currentPage === "") currentPage = "dashboard.html";
 
         const links = document.querySelectorAll('#nav-links .nav-link');
         links.forEach(link => {
@@ -127,21 +131,6 @@ export async function loadSidebar() {
                 if (icon) icon.style.fontVariationSettings = "'FILL' 0, 'wght' 400";
                 if (indicator) indicator.className = "active-indicator absolute left-0 top-1/4 bottom-1/4 w-1 bg-[#4c5b71] rounded-full transform -translate-x-full opacity-0 transition-all duration-300 ease-out";
             }
-
-            // --- SMOOTH PAGE TRANSITION INTERCEPTOR ---
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                // Only intercept actual internal links, not the current page
-                if (href && href !== '#' && !isMatch) {
-                    e.preventDefault(); 
-                    showLoader(); // Fire the loader immediately
-                    
-                    // Wait a tiny fraction of a second for the animation to kick in, then navigate
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 150); 
-                }
-            });
         });
     } catch (error) {
         console.error("Failed to load sidebar structure:", error);
@@ -159,3 +148,33 @@ export function setupLogout() {
         });
     }
 }
+
+// --- FIX 1: GLOBAL PAGE TRANSITION INTERCEPTOR ---
+// This sits outside the sidebar loop and catches ALL links on the page.
+document.addEventListener('click', (e) => {
+    // Check if the clicked element (or its parent) is a standard anchor link
+    const link = e.target.closest('a');
+    
+    if (link) {
+        const href = link.getAttribute('href');
+        const target = link.getAttribute('target');
+        
+        // Validate it's a real navigation link
+        if (href && 
+            !href.startsWith('#') && 
+            !href.startsWith('javascript:') && 
+            target !== '_blank' && 
+            !link.hasAttribute('download')) {
+            
+            // Allow native OS behavior for new tabs (Ctrl/Cmd + Click)
+            if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+
+            e.preventDefault(); 
+            showLoader(); 
+            
+            setTimeout(() => {
+                window.location.href = href;
+            }, 150);
+        }
+    }
+});
