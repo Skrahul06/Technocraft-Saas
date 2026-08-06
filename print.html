@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technocraft - Print Challan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* THE BULLETPROOF A4 PRINT FIX */
+        @media print {
+            /* 1. Zero margin kills the browser's default Date/URL stamps */
+            @page { 
+                size: A4 portrait; 
+                margin: 0; 
+            }
+            
+            /* 2. Reset body to prevent browser padding from pushing content down */
+            body { 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                background: white !important; 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact; 
+            }
+            
+            /* 3. Lock the container to EXACTLY 1 A4 page dimensions */
+            .print-container {
+                width: 210mm !important;
+                height: 297mm !important;
+                margin: 0 !important;
+                padding: 15mm !important; /* Safe printable border */
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+                overflow: hidden !important; /* Prevents 1px spills to page 2 */
+            }
+            
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<!-- Screen background is dark (#0f0f11) to match your app, but paper prints white -->
+<body class="bg-[#0f0f11] py-8 font-sans text-gray-900 flex justify-center">
+
+    
+    <!-- THE ACTUAL A4 PDF CANVAS -->
+    <div class="print-container w-full max-w-[210mm] mx-auto bg-white border border-gray-200 shadow-xl p-10 flex flex-col min-h-[297mm]">
+        
+        <!-- HEADER -->
+        <div class="flex justify-between items-start mb-8 border-b-2 border-slate-800 pb-4">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight">TECHNOCRAFT</h1>
+                <p class="text-sm text-gray-600 mt-1">123 Tech Park, Logistics Suite 400</p>
+                <p class="text-sm text-gray-600">Salt Lake City, Kolkata, WB 700091</p>
+                <p class="text-sm font-semibold mt-1">GSTIN: 19ABCDE1234F1Z5</p>
+            </div>
+            <div class="text-right">
+                <h2 class="text-2xl font-bold text-slate-800 tracking-wide">DELIVERY CHALLAN</h2>
+                <div class="mt-2 grid grid-cols-2 gap-x-4 text-sm">
+                    <span class="text-gray-500 font-medium">Challan No:</span>
+                    <span class="font-bold text-gray-900" id="display-challan-id">Loading...</span>
+                    <span class="text-gray-500 font-medium">Date:</span>
+                    <span class="font-bold text-gray-900" id="display-date">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADDRESS BLOCKS -->
+        <div class="grid grid-cols-2 gap-8 mb-8">
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <div class="bg-slate-800 text-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
+                    Billed To / Ship To
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-lg text-gray-900" id="display-party">Loading...</h3>
+                    <p class="text-sm text-gray-600 mt-1" id="display-address">Bengaluru, Karnataka</p>
+                    <p class="text-sm font-mono font-medium mt-2" id="display-gst">GSTIN: Loading...</p>
+                </div>
+            </div>
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <div class="bg-slate-800 text-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
+                    Dispatch Details
+                </div>
+                <div class="p-4 grid grid-cols-2 gap-y-2 text-sm">
+                    <span class="text-gray-500">Transporter:</span>
+                    <span class="font-bold text-gray-900 text-right" id="display-transporter">-</span>
+                    <span class="text-gray-500">Vehicle No:</span>
+                    <span class="font-bold text-gray-900 text-right" id="display-vehicle">-</span>
+                    <span class="text-gray-500">LR No:</span>
+                    <span class="font-bold text-gray-900 text-right" id="display-lr">-</span>
+                    <span class="text-gray-500">E-Way Bill:</span>
+                    <span class="font-bold text-gray-900 text-right" id="display-eway">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ITEMS TABLE (Pricing Removed) -->
+        <table class="w-full mb-8 border-collapse">
+            <thead>
+                <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
+                    <th class="px-4 py-2 text-left font-semibold w-12">#</th>
+                    <th class="px-4 py-2 text-left font-semibold">Item Description</th>
+                    <th class="px-4 py-2 text-center font-semibold w-32">HSN/SAC</th>
+                    <th class="px-4 py-2 text-right font-semibold w-32">Qty</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm" id="items-tbody">
+                <!-- Data will be injected here via JS -->
+            </tbody>
+            <tfoot>
+                <tr class="bg-slate-50 border-b border-gray-300">
+                    <td colspan="3" class="px-4 py-3 text-right font-bold text-gray-700 uppercase text-xs tracking-wider">Total Quantity</td>
+                    <td class="px-4 py-3 text-right font-black text-gray-900 text-lg" id="display-total-qty">0</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- FOOTER / SIGNATURES -->
+        <!-- mt-auto acts as a spring, pushing this block perfectly to the absolute bottom of the A4 page -->
+        <div class="grid grid-cols-2 gap-8 mt-auto pt-8">
+            <div class="text-xs text-gray-500">
+                <p class="font-bold text-gray-900 mb-1">Remarks / Notes:</p>
+                <p class="italic mb-4" id="display-remarks">None</p>
+                <p class="font-bold text-gray-900 mb-1">Terms & Conditions:</p>
+                <ol class="list-decimal pl-4 space-y-1">
+                    <li>Goods once sold will not be taken back.</li>
+                    <li>Subject to Kolkata jurisdiction only.</li>
+                </ol>
+            </div>
+            <div class="text-right flex flex-col justify-end">
+                <p class="text-xs text-gray-500 mb-10">For <span class="font-bold text-gray-900">Technocraft</span></p>
+                <div class="border-t border-gray-400 w-48 ml-auto pt-2">
+                    <p class="text-xs font-bold text-gray-900 uppercase tracking-wider">Authorized Signatory</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let API_BASE;
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            API_BASE = 'http://localhost:5000/api';
+        } else {
+            API_BASE = 'https://technocraft-saas.onrender.com/api';
+        }
+    
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const challanId = urlParams.get('id');
+    
+            if (!challanId) {
+                alert("No Challan ID provided!");
+                return;
+            }
+    
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/challans/${challanId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+    
+                if (!response.ok) throw new Error("Failed to load Challan data");
+                const data = await response.json();
+    
+                document.getElementById('display-challan-id').innerText = data.challan_number;
+                
+                const dateObj = new Date(data.date);
+                document.getElementById('display-date').innerText = dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                
+                document.getElementById('display-party').innerText = data.party_name;
+                
+                let gstText = "GSTIN: Not Provided";
+                if (data.contact_details && data.contact_details.gst) {
+                    gstText = `GSTIN: ${data.contact_details.gst}`;
+                }
+                document.getElementById('display-gst').innerText = gstText;
+    
+                document.getElementById('display-transporter').innerText = data.transporter || 'Self / Direct';
+                document.getElementById('display-vehicle').innerText = data.vehicle_number || '-';
+                document.getElementById('display-lr').innerText = data.lr_number || '-';
+                document.getElementById('display-eway').innerText = data.eway_bill || '-';
+                document.getElementById('display-remarks').innerText = data.remarks || 'None';
+    
+                const tbody = document.getElementById('items-tbody');
+                tbody.innerHTML = ''; 
+                let totalQty = 0;
+    
+                data.items.forEach((item, index) => {
+                    totalQty += parseInt(item.quantity);
+                    tbody.innerHTML += `
+                        <tr class="border-b border-gray-200">
+                            <td class="px-4 py-3 text-gray-500">${index + 1}</td>
+                            <td class="px-4 py-3 font-bold text-gray-900">${item.product_name}</td>
+                            <td class="px-4 py-3 text-center text-gray-600">${item.hsn_code || '-'}</td>
+                            <td class="px-4 py-3 text-right font-medium">${item.quantity} ${item.unit_type || 'Pcs'}</td>
+                        </tr>
+                    `;
+                });
+    
+                document.getElementById('display-total-qty').innerText = totalQty;
+    
+                // Short delay ensures fonts load before triggering print
+                setTimeout(() => window.print(), 300);
+
+                // Short delay ensures fonts load before triggering print
+                setTimeout(() => window.print(), 300);
+
+                // THE MAGIC FIX: Automatically close the tab when the print dialog is done!
+                window.onafterprint = () => window.close();
+    
+            } catch (error) {
+                console.error("Print Page Error:", error);
+                alert("Error loading printable challan.");
+            }
+        });
+    </script>
+</body>
+</html>

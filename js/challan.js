@@ -161,9 +161,6 @@ function setupEventListeners() {
 
     const modalCloseBtn = document.getElementById('modal-close-btn');
     if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeViewModal);
-
-    const modalPrintBtn = document.getElementById('modal-print-btn');
-    if (modalPrintBtn) modalPrintBtn.addEventListener('click', () => window.print());
 }
 
 function attachActionListeners() {
@@ -174,8 +171,8 @@ function attachActionListeners() {
             
             if (action === 'view') openViewModal(id);
             if (action === 'print') {
-                openViewModal(id);
-                setTimeout(() => window.print(), 300);
+                // INTEGRATION: Opens the new dedicated print page in a new tab
+                window.open(`print.html?id=${id}`, '_blank');
             }
             if (action === 'edit') {
                 window.location.href = `edit-challan.html?id=${id}`;
@@ -344,6 +341,12 @@ async function openViewModal(id) {
 
         </div>
     `;
+
+    // INTEGRATION: Update the print button inside the modal to use the new page
+    const modalPrintBtn = document.getElementById('modal-print-btn');
+    if (modalPrintBtn) {
+        modalPrintBtn.onclick = () => window.open(`print.html?id=${id}`, '_blank');
+    }
 
     modal.classList.remove('hidden');
     setTimeout(() => modal.classList.remove('opacity-0'), 10);

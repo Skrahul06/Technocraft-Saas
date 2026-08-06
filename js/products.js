@@ -28,11 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (searchInput) {
         searchInput.addEventListener('input', fetchInventoryLedger);
     }
-    
-    const categorySelect = document.getElementById('inventory-category-select');
-    if (categorySelect) {
-        categorySelect.addEventListener('change', fetchInventoryLedger);
-    }
 
     // --- MODAL CONTROLS ---
     const modal = document.getElementById('add-product-modal');
@@ -59,8 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.disabled = true;
         btn.innerHTML = 'Saving...';
 
-        // FIX: The backend expects 'price', but it maps it to 'unit_price' in the DB.
-        // I have ensured the frontend payload matches the exact keys your backend looks for.
         const payload = {
             name: document.getElementById('new-prod-name').value,
             sku: document.getElementById('new-prod-sku').value,
@@ -89,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('add-product-form').reset();
             document.getElementById('close-product-modal-btn').click();
             
-            // Instantly refresh the table to show the new product
             fetchInventoryLedger(); 
             
         } catch (error) {
@@ -104,12 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
 async function fetchInventoryLedger() {
     const searchInput = document.getElementById('searchInput');
     const searchVal = searchInput ? searchInput.value : '';
-    const catVal = document.getElementById('inventory-category-select').value;
     const tableBody = document.getElementById('inventory-table-body');
 
     let endpoint = `${API_BASE}/products?`;
     if (searchVal) endpoint += `search=${encodeURIComponent(searchVal)}&`;
-    if (catVal) endpoint += `category=${encodeURIComponent(catVal)}`;
 
     try {
         const response = await fetch(endpoint, {
@@ -126,8 +116,7 @@ async function fetchInventoryLedger() {
         if (!response.ok) throw new Error("Could not parse data streams from inventory endpoint.");
         const products = await response.json();
 
-        // NEW: Dynamically extract and populate categories if no filters are active
-        if (!searchVal && !catVal) {
+        if (!searchVal) {
             extractAndPopulateCategories(products);
         }
 
@@ -213,17 +202,7 @@ function calculateInventorySummaryMetrics(productArray) {
 function extractAndPopulateCategories(products) {
     const categories = [...new Set(products.map(p => p.category).filter(c => c && c.trim() !== ''))].sort();
     
-    const filterSelect = document.getElementById('inventory-category-select');
     const dataList = document.getElementById('category-list');
-    
-    if (filterSelect) {
-        const currentVal = filterSelect.value; 
-        filterSelect.innerHTML = '<option value="">All Categories</option>';
-        categories.forEach(cat => {
-            filterSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
-        });
-        filterSelect.value = currentVal; 
-    }
     
     if (dataList) {
         dataList.innerHTML = '';
